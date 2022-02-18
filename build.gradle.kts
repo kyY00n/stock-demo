@@ -5,6 +5,7 @@ plugins {
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("jvm") version "1.6.10"
     kotlin("plugin.spring") version "1.6.10"
+    kotlin("plugin.serialization") version "1.6.10"
 }
 
 group = "com.rosie.commerce"
@@ -20,6 +21,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
     implementation("it.ozimov:embedded-redis:0.7.2")
+
+    implementation("org.springframework.kafka:spring-kafka")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
     implementation("io.netty:netty-resolver-dns-native-macos:4.1.74.Final")
 

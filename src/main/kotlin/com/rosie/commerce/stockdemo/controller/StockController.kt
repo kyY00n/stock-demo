@@ -1,10 +1,7 @@
 package com.rosie.commerce.stockdemo.controller
 
-import com.rosie.commerce.stockdemo.service.SingleProductOrder
 import com.rosie.commerce.stockdemo.service.StockService
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import reactor.core.publisher.Mono
 
 data class SetProductStockReq(
     val productId: String,
@@ -34,6 +31,7 @@ class StockController(
         val (productId, stock) = setProductStockReq
         return stockService.createProductStock(productId, stock)
     }
+
     @GetMapping("/{productId}")
     suspend fun getProductStock(
         @PathVariable(value = "productId") productId: String
