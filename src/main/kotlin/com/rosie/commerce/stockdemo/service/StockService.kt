@@ -5,39 +5,33 @@ import com.rosie.commerce.stockdemo.controller.IncreaseProductStockReq
 import com.rosie.commerce.stockdemo.repository.StockRepository
 import org.springframework.stereotype.Service
 
-data class SingleProductOrder(
-    val productId: String,
-    val quantity: Long,
-)
-
 @Service
 class StockService(
     private val stockRepository: StockRepository
 ) {
-    fun getProductStock(productId: String): Long {
+    suspend fun createProductStock(productId: String, quantity: Long) {
+        stockRepository.createProductStock(productId, quantity)
+    }
+
+    suspend fun getProductStock(productId: String): String? {
         return stockRepository.findStockByProductId(productId)
     }
 
-    fun incrProductStock(increaseProductStockReq: IncreaseProductStockReq): Long {
+    suspend fun incrProductStock(increaseProductStockReq: IncreaseProductStockReq): Long? {
         val (productId, incr) = increaseProductStockReq
         return stockRepository.increaseStockByProductId(productId, incr)
     }
 
-    fun decProductStock(decreaseProductStockReq: DecreaseProductStockReq): Long {
+    suspend fun decProductStock(decreaseProductStockReq: DecreaseProductStockReq): Boolean {
         val (productId, dec) = decreaseProductStockReq
-        return stockRepository.decreaseStockByProductId(productId, dec)
-    }
-
-    fun createSingleProductOrder(order: SingleProductOrder) {
-        val (productId, quantity) = order
-        val currentStock = stockRepository.findStockByProductId(productId).block()?.toLong()
-        stockRepository.decreaseStockByProductId(productId, quantity).block()
-
-        val decreasedStock = currentStock?.let { currentStock - quantity } ?: throw Exception()
-
-        if (decreasedStock < 0) {
-            stockRepository.increaseStockByProductId(productId, quantity)
-            // redis
+        val currStock = stockRepository.decreaseStockByProductId(productId, dec) ?: return false
+        if (currStock < 0) {
+            stockRepository.increaseStockByProductId(productId, dec)
+            return false
         }
+        if (currStock == 0L) {
+            // TODO: 1 품절여부 갱신을 위한 품절 kafka 이벤트 발행
+        }
+        return true
     }
 }

@@ -1,15 +1,18 @@
 package com.rosie.commerce.stockdemo.controller
 
+import com.rosie.commerce.stockdemo.service.SingleProductOrder
 import com.rosie.commerce.stockdemo.service.StockService
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import reactor.core.publisher.Mono
 
-data class ProductStockInfo(
+data class SetProductStockReq(
     val productId: String,
     val stock: Long,
 )
 
 data class IncreaseProductStockReq(
-    val productId: String,
+    val productId: String, // path variable 로 받으면 좋을 것 같다~
     val incr: Long,
 )
 
@@ -23,27 +26,36 @@ data class DecreaseProductStockReq(
 class StockController(
     private val stockService: StockService
 ) {
+
+    @PostMapping("")
+    suspend fun setNewProductStock(
+        @RequestBody setProductStockReq: SetProductStockReq
+    ): Unit {
+        val (productId, stock) = setProductStockReq
+        return stockService.createProductStock(productId, stock)
+    }
     @GetMapping("/{productId}")
-    fun getProductStock(
+    suspend fun getProductStock(
         @PathVariable(value = "productId") productId: String
-    ): ProductStockInfo {
-        val stock = stockService.getProductStock(productId)
-        return ProductStockInfo(productId, stock)
+    ): String? {
+        return stockService.getProductStock(productId)
     }
 
     @PatchMapping("/incr")
-    fun increaseProductStock(
+    suspend fun increaseProductStock(
         @RequestBody increaseProductStockReq: IncreaseProductStockReq
-    ): ProductStockInfo {
+    ): Long? {
         val changedStock = stockService.incrProductStock(increaseProductStockReq)
-        return ProductStockInfo(increaseProductStockReq.productId, changedStock)
+//        return ProductStockInfo(increaseProductStockReq.productId, changedStock)
+        return changedStock
     }
 
     @PatchMapping("/dec")
-    fun decProductStock(
+    suspend fun decProductStock(
         @RequestBody decreaseProductStockReq: DecreaseProductStockReq
-    ): ProductStockInfo {
+    ): Boolean {
         val changedStock = stockService.decProductStock(decreaseProductStockReq)
-        return ProductStockInfo(decreaseProductStockReq.productId, changedStock)
+//        return ProductStockInfo(decreaseProductStockReq.productId, changedStock)
+        return changedStock
     }
 }

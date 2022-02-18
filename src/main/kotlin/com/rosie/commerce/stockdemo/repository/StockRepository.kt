@@ -5,7 +5,8 @@ import reactor.core.publisher.Mono
 
 @Repository
 interface StockRepository {
-    fun findStockByProductId(productId: String): Mono<String>
-    fun increaseStockByProductId(productId: String, incr: Long): Mono<Long>
-    fun decreaseStockByProductId(productId: String, dec: Long): Mono<Long>
+    suspend fun createProductStock(productId: String, amount: Long)
+    suspend fun findStockByProductId(productId: String): String?
+    suspend fun increaseStockByProductId(productId: String, amount: Long): Long?
+    suspend fun decreaseStockByProductId(productId: String, amount: Long): Long?
 }
