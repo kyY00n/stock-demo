@@ -21,7 +21,12 @@ class StockService(
 
     suspend fun incrProductStock(increaseProductStockReq: IncreaseProductStockReq): Long? {
         val (productId, incr) = increaseProductStockReq
-        return stockRepository.increaseStockByProductId(productId, incr)
+        val currStock = stockRepository.findStockByProductId(productId) ?: throw Exception("잘못된 productId")
+        val changedStock = stockRepository.increaseStockByProductId(productId, incr)
+        if (currStock.toLong() <= 0) {
+            stockStateEventPublisher.publishToInStockMsg(productId)
+        }
+        return changedStock
     }
 
     suspend fun decProductStock(decreaseProductStockReq: DecreaseProductStockReq): Boolean {
