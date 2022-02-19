@@ -33,7 +33,7 @@ class StockService(
         }
         if (currStock == 0L) {
             // TODO: 1 품절여부 갱신을 위한 품절 kafka 이벤트 발행
-            stockStateEventPublisher.publishToInStockMsg(productId)
+            stockStateEventPublisher.publishOutOfStockMsg(productId)
         }
         return true
     }
