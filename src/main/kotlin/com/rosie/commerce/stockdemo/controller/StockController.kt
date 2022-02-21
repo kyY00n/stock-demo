@@ -35,7 +35,7 @@ class StockController(
     @GetMapping("/{productId}")
     suspend fun getProductStock(
         @PathVariable(value = "productId") productId: String
-    ): String? {
+    ): Long? {
         return stockService.getProductStock(productId)
     }
 

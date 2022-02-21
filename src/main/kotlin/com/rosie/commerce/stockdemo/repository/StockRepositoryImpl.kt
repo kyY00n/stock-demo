@@ -20,8 +20,8 @@ class StockRepositoryImpl(
     }
 
     // 코루틴을 사용하면 마치 동기처럼! 사용할 수 있당
-    override suspend fun findStockByProductId(productId: String): String? {
-        return redisReactiveCommands.get(productId).awaitSingleOrNull()
+    override suspend fun findStockByProductId(productId: String): Long? {
+        return redisReactiveCommands.get(productId).awaitSingleOrNull()?.toLong()
     }
 
     override suspend fun increaseStockByProductId(productId: String, amount: Long): Long? {
