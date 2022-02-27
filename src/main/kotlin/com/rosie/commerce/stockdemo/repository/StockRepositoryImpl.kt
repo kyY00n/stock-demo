@@ -29,6 +29,12 @@ class StockRepositoryImpl(
     }
 
     override suspend fun decreaseStockByProductId(productId: String, amount: Long): Long? {
-        return redisReactiveCommands.decrby(productId, amount).awaitSingleOrNull()
+        val already = redisReactiveCommands.get(productId).awaitSingleOrNull()
+        println(already)
+        println("is get res null?: ${already == null}")
+        val res = redisReactiveCommands.decrby(productId, amount).awaitSingle()
+        println(res)
+        println("is res null?: ${res == null}")
+        return res
     }
 }

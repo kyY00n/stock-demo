@@ -1,11 +1,10 @@
 package com.rosie.commerce.stockdemo.service
 
-import com.rosie.commerce.stockdemo.event.KafkaMessageFormat
+import com.rosie.commerce.stockdemo.event.StockChangeEvent
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Component
-import java.io.Serializable
 
 @Component
 class KafkaProducer(
@@ -17,7 +16,7 @@ class KafkaProducer(
         kafkaTemplate.send(TOPIC, key, message)
     }
 
-    fun produceEvent(key: String, value: KafkaMessageFormat) {
-        kafkaTemplate.send(TOPIC, key, Json.encodeToString(value))
+    fun produceEvent(key: String, event: StockChangeEvent) {
+        kafkaTemplate.send(TOPIC, key, Json.encodeToString(event))
     }
 }

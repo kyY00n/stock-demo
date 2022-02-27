@@ -4,18 +4,20 @@ import com.rosie.commerce.stockdemo.service.KafkaProducer
 import kotlinx.serialization.Serializable
 import org.springframework.stereotype.Component
 
-interface KafkaMessageFormat {}
 
 enum class StockState(val description: String) {
     OUT_OF_STOCK("품절"),
     IN_STOCK("재고 있음")
 }
 
+
+// 여기 serializable 붙였을 때는 KafkaMessageFormat에 @Serializable 없다고 에러남
 @Serializable
 data class StockChangeEvent(
     val productId: String,
     val state: StockState
-): KafkaMessageFormat
+    // val isInStock: Boolean
+)
 
 @Component
 class StockStateEventPublisher(

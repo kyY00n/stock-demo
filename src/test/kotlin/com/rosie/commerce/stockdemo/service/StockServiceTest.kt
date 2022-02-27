@@ -47,7 +47,7 @@ class StockServiceTest {
 
             val increaseAmount = 100L
 
-            coEvery { stockRepository.findStockByProductId(productId) } returns originalStock.toString()
+            coEvery { stockRepository.findStockByProductId(productId) } returns originalStock
             val increaseProductStockReq = IncreaseProductStockReq(
                 productId,
                 increaseAmount
